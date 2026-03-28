@@ -37,6 +37,9 @@ h1 {
 h2 {
   font-family: Verdana, sans-serif;
   font-weight: bold;
+  color: #061f4a;
+  font-size: 20px;
+  margin-top: 10px;
 }
 
 /* Logo */
@@ -135,7 +138,7 @@ button:hover {
   font-size: 14px;
 }
 
-#loading-message {
+#loading-message, #error-message {
   text-align: center;
   min-width: 0px;
   max-width: 200px;

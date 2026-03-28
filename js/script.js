@@ -21,6 +21,23 @@ const IMAGE_SAMPLE = [{
     "url": "https://apod.nasa.gov/apod/image/1707/ic342_rector1024s.jpg"
 }];
 
+const MONTH_MAP = {
+    '01': 'January',
+    '02': 'February',
+    '03': 'March',
+    '04': 'April',
+    '05': 'May',
+    '06': 'June',
+    '07': 'July',
+    '08': 'August',
+    '09': 'September',
+    '10': 'October',
+    '11': 'November',
+    '12': 'December'
+};
+
+const ERROR_MESSAGE = 'Sorry, we could not retrieve media from the requested dates. Please try again later.'
+
 let galleryItems = 0;
 let placeholderExists = true;
 
@@ -37,7 +54,13 @@ setupDateInputs(startInput, endInput);
 /*-----------------------= My code =------------------------------*/
 
 function displayErrorMessage(error) {
+    const gallery = document.getElementById('gallery');
 
+    gallery.innerHTML = `
+        <p class="gallery-item" id="error-message">
+            ${ERROR_MESSAGE}
+        </p>
+    `;
 }
 
 function displayLoadingMessage() {
@@ -118,11 +141,54 @@ function appendGalleryItem(url, title, date, explanation, mediaType) {
     galleryItems++;
 }
 
+// Clear a leading zero from the day
+function cleanDay(dayDate) {
+    let cleanDay = dayDate;
+    if(dayDate[0] === '0') {
+        cleanDay = dayDate.substring(1);
+    }
+    return cleanDay;
+}
+
+// The helper methods for obtaining the year, month, and day of a given date makes the
+// assumption that the date parameter comes from an object fetched from the API
+function getDay(date) {
+    const monthIndex = date.indexOf('-') + 1;
+    const dateWithoutYear = date.substring(monthIndex);
+    const dayIndex = dateWithoutYear.indexOf('-') + 1;
+    const dateWithoutMonth = dateWithoutYear.substring(dayIndex);
+    const dayToStr = cleanDay(dateWithoutMonth);
+
+    return dayToStr;
+}
+
+function getMonth(date) {
+    const monthIndex = date.indexOf('-') + 1;
+    const month = date.substring(monthIndex, monthIndex + 2);
+    const monthToStr = MONTH_MAP[month];
+    return monthToStr;
+}
+
+function getYear(date) {
+    const endYearIndex = date.indexOf('-');
+    const yearToStr = date.substring(0, endYearIndex);
+    return yearToStr;
+}
+
+function convertDate(date) {
+    const day = getDay(date);
+    const month = getMonth(date);
+    const year = getYear(date);
+    
+    return `${month} ${day}, ${year}`;
+}
+
 // Assumes dataObj includes fields for "url", "title", "date", "explanation", and "media_type"
 function addItemByObject(dataObj) {
     const url = dataObj.url;
     const title = dataObj.title;
-    const date = dataObj.date;
+    let date = dataObj.date;
+    date = convertDate(date);
     const explanation = dataObj.explanation;
     const mediaType = dataObj.media_type;
 
@@ -141,6 +207,7 @@ function initializeEvents() {
     const getImagesButton = document.getElementById('get-images-button');
     getImagesButton.addEventListener('click', function() {
         //fetchGalleryItems();
+        clearGallery();
         displayGalleryItems(IMAGE_SAMPLE);
     });
 }
