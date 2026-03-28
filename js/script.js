@@ -36,7 +36,10 @@ const MONTH_MAP = {
     '12': 'December'
 };
 
-const ERROR_MESSAGE = 'Sorry, we could not retrieve media from the requested dates. Please try again later.'
+const ERROR_MESSAGE = 'Sorry, we could not retrieve media from the requested dates. Please try again later.';
+const LOADING_MESSAGE = '🔄 Loading space photos…';
+
+const galleryItemList = {};
 
 let galleryItems = 0;
 let placeholderExists = true;
@@ -68,7 +71,7 @@ function displayLoadingMessage() {
 
     gallery.innerHTML = `
         <p class="gallery-item" id="loading-message">
-            Loading pictures...
+            ${LOADING_MESSAGE}
         </p>
     `;
 }
@@ -105,18 +108,19 @@ function clearGallery() {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = "";
     placeholderExists = false;
+    galleryItems = 0;
 }
 
-function getAttr(url, mediaType) {
+function getAttr(url, mediaType, attrClass) {
     let itemAttr;
 
     switch(mediaType) {
         case 'image':
-            itemAttr = `<img src="${url}" alt="image ${galleryItems}"></img>`;
+            itemAttr = `<img src="${url}" alt="image ${galleryItems}" class="${attrClass}"></img>`;
             break;
         case 'video':
             itemAttr = `
-                <video class="gallery-item" controls>
+                <video class="${attrClass}" controls>
                     <source src="${url}" type="video/mp4">
                 </video>
             `;
@@ -125,19 +129,49 @@ function getAttr(url, mediaType) {
     return itemAttr;
 }
 
+function openModal(targetID) {
+
+}
+
 function appendGalleryItem(url, title, date, explanation, mediaType) {
-    const attr = getAttr(url, mediaType);
-    gallery.innerHTML += `
-        <div class="gallery-item" id="${IMAGE_ID_STARTER}${galleryItems}">
-            ${attr}
-            <h2 class="gallery-item-title">
-                ${title}
-            </h2>
-            <p class="gallery-item-date">
-                ${date}
-            </p>
+    const attr = getAttr(url, mediaType, 'gallery-item');
+
+    const currentGalleryItem = document.createElement('div');
+    currentGalleryItem.classList.add('gallery-item');
+
+    currentGalleryItem.innerHTML = `
+        ${attr}
+        <h3 class="gallery-item-title">
+            ${title}
+        </h3>
+        <div class="container" id="gallery-item-info">
+            ${date}
+            <span class="button-container" id="button${galleryItems}">
+                <button class="learn-more-button" id="learn-more-button${galleryItems}">
+                    Learn more
+                </button>
+            </span>
         </div>
     `;
+
+    galleryItemList[`learn-more-button${galleryItems}`] = {
+        'url': url,
+        'title': title,
+        'date': date,
+        'explanation': explanation,
+        'media_type': mediaType
+    };
+    
+    currentGalleryItem.querySelector('.learn-more-button').
+        addEventListener('click', function(event) {
+            console.log(event.target.id);
+            //const targetID = event.target.id;
+            //openModal(targetID);
+        });
+    
+    const gallery = document.getElementById('gallery');
+    gallery.appendChild(currentGalleryItem);
+    
     galleryItems++;
 }
 
@@ -193,6 +227,7 @@ function addItemByObject(dataObj) {
     const mediaType = dataObj.media_type;
 
     appendGalleryItem(url, title, date, explanation, mediaType);
+
 }
 
 function displayGalleryItems(galleryData) {
@@ -206,9 +241,9 @@ function displayGalleryItems(galleryData) {
 function initializeEvents() {
     const getImagesButton = document.getElementById('get-images-button');
     getImagesButton.addEventListener('click', function() {
-        //fetchGalleryItems();
         clearGallery();
-        displayGalleryItems(IMAGE_SAMPLE);
+        //displayGalleryItems(IMAGE_SAMPLE);
+        fetchGalleryItems();
     });
 }
 
