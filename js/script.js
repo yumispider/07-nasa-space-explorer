@@ -129,12 +129,48 @@ function getAttr(url, mediaType, attrClass) {
     return itemAttr;
 }
 
-function openModal(targetID) {
+function closeModal() {
+    const galleryModal = document.getElementById('learn-more-modal');
+    galleryModal.close();
+}
 
+function openModal(targetID) {
+    const galleryItemObj = galleryItemList[targetID];
+    const url = galleryItemObj.url;
+    const mediaType = galleryItemObj.media_type;
+    const attr = getAttr(url, mediaType, 'modal-media');
+    const title = galleryItemObj.title;
+    const date = galleryItemObj.date;
+    const explanation = galleryItemObj.explanation;
+    const galleryModalContent = document.getElementById('learn-more-modal');
+
+    galleryModalContent.innerHTML = `
+        <h2 class="modal-title">
+              ${title}
+        </h2>
+        ${attr}
+        <p class="modal-date">
+            ${date}
+        </p>
+        <p class="modal-explanation">
+            ${explanation}
+        </p>
+        <button class="close-modal-button" id="close-modal">
+            Close this window
+        </button>
+    `;
+
+    galleryModalContent.showModal();
+
+    const closeModalButton = document.getElementById('close-modal');
+    
+    closeModalButton.addEventListener('click', function() {
+            closeModal();
+        });
 }
 
 function appendGalleryItem(url, title, date, explanation, mediaType) {
-    const attr = getAttr(url, mediaType, 'gallery-item');
+    const attr = getAttr(url, mediaType, '');
 
     const currentGalleryItem = document.createElement('div');
     currentGalleryItem.classList.add('gallery-item');
@@ -164,9 +200,9 @@ function appendGalleryItem(url, title, date, explanation, mediaType) {
     
     currentGalleryItem.querySelector('.learn-more-button').
         addEventListener('click', function(event) {
-            console.log(event.target.id);
-            //const targetID = event.target.id;
-            //openModal(targetID);
+            //console.log(event.target.id);
+            const targetID = event.target.id;
+            openModal(targetID);
         });
     
     const gallery = document.getElementById('gallery');
@@ -227,7 +263,6 @@ function addItemByObject(dataObj) {
     const mediaType = dataObj.media_type;
 
     appendGalleryItem(url, title, date, explanation, mediaType);
-
 }
 
 function displayGalleryItems(galleryData) {
@@ -242,9 +277,12 @@ function initializeEvents() {
     const getImagesButton = document.getElementById('get-images-button');
     getImagesButton.addEventListener('click', function() {
         clearGallery();
-        //displayGalleryItems(IMAGE_SAMPLE);
-        fetchGalleryItems();
+        displayGalleryItems(IMAGE_SAMPLE);
+        //fetchGalleryItems();
     });
 }
 
 initializeEvents();
+
+clearGallery();
+displayGalleryItems(IMAGE_SAMPLE);
