@@ -145,28 +145,41 @@ function openModal(targetID) {
     const galleryModalContent = document.getElementById('learn-more-modal');
 
     galleryModalContent.innerHTML = `
-        <h2 class="modal-title">
-              ${title}
-        </h2>
-        ${attr}
-        <p class="modal-date">
-            ${date}
-        </p>
-        <p class="modal-explanation">
-            ${explanation}
-        </p>
-        <button class="close-modal-button" id="close-modal">
-            Close this window
-        </button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    ${title}
+                </h2>
+                <p class="modal-date">
+                    ${date}
+                </p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-text">
+                    <p class="modal-explanation">
+                        ${explanation}
+                    </p>
+                </div>
+                <div class="modal-media-container">
+                    ${attr}
+                </div>
+            </div>
+            <div class="close-container">
+                <button class="close-modal-button" id="close-modal">
+                    Close this window
+                </button>
+            </div>
+        </div>
     `;
 
     galleryModalContent.showModal();
 
-    const closeModalButton = document.getElementById('close-modal');
-    
+    document.getElementById('close-modal').onclick = closeModal;
+    /*
     closeModalButton.addEventListener('click', function() {
             closeModal();
         });
+    */
 }
 
 function appendGalleryItem(url, title, date, explanation, mediaType) {
