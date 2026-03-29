@@ -56,13 +56,14 @@ setupDateInputs(startInput, endInput);
 
 /*-----------------------= My code =------------------------------*/
 
-function displayErrorMessage(error) {
+function displayErrorMessage(error, code) {
     const gallery = document.getElementById('gallery');
 
     gallery.innerHTML = `
-        <p class="gallery-item" id="error-message">
-            ${ERROR_MESSAGE}
-        </p>
+        <div class="placeholder">
+            <p class="error-code"><span class="inter-text-normal">Error code: ${code}</span></p>
+            <p><span class="inter-text-normal">${ERROR_MESSAGE}</span></p>
+        </div>
     `;
 }
 
@@ -70,9 +71,9 @@ function displayLoadingMessage() {
     const gallery = document.getElementById('gallery');
 
     gallery.innerHTML = `
-        <p class="gallery-item" id="loading-message">
-            ${LOADING_MESSAGE}
-        </p>
+        <div class="placeholder">
+            <p><span class="inter-text-normal">${LOADING_MESSAGE}</span></p>
+        </div>
     `;
 }
 
@@ -83,6 +84,8 @@ async function fetchGalleryItems() {
     const startDate = startInput.value;
     const endDate = endInput.value;
 
+    let code;
+
     const url = `
         https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&start_date=${startDate}&end_date=${endDate}
     `;
@@ -91,7 +94,8 @@ async function fetchGalleryItems() {
         const response = await fetch(url);
 
         if(!response.ok) {
-            throw new Error(`Error code: ${response.status}`);
+            code = response.status;
+            throw new Error(`Error code: ${code}`);
         }
 
         const data = await response.json();
@@ -100,7 +104,7 @@ async function fetchGalleryItems() {
         displayGalleryItems(data);
     } catch(error) {
         console.error(`${error}\nCould not fetch images`);
-        displayErrorMessage(error);
+        displayErrorMessage(error, code);
     }
 }
 
@@ -176,11 +180,6 @@ function openModal(targetID) {
     galleryModalContent.showModal();
 
     document.getElementById('close-modal').onclick = closeModal;
-    /*
-    closeModalButton.addEventListener('click', function() {
-            closeModal();
-        });
-    */
 }
 
 function appendGalleryItem(url, title, date, explanation, mediaType) {
@@ -195,7 +194,7 @@ function appendGalleryItem(url, title, date, explanation, mediaType) {
             <span class="inter-text-bold">${title}</span>
         </h3>
         <div class="container" id="gallery-item-info">
-            ${date}
+            <span class="inter-text-normal">${date}</span>
             <span class="button-container" id="button${galleryItems}">
                 <button class="learn-more-button" id="learn-more-button${galleryItems}">
                     <span class="inter-text-normal">Learn more</span>
@@ -292,11 +291,11 @@ function initializeEvents() {
     getImagesButton.addEventListener('click', function() {
         clearGallery();
         //displayGalleryItems(IMAGE_SAMPLE);
-        //fetchGalleryItems();
+        fetchGalleryItems();
     });
 }
 
 initializeEvents();
 
-clearGallery();
-displayGalleryItems(IMAGE_SAMPLE);
+//clearGallery();
+//displayGalleryItems(IMAGE_SAMPLE);

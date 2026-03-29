@@ -193,7 +193,8 @@ button:hover {
   top: 50%;
   transform: translate(-50%, -50%);
   overflow: auto;
-  border: none;
+  border-color: #061f4a;
+  border-width: 5px;
   border-radius: 8px;
   padding: 0;
   width: 80%;
@@ -203,11 +204,14 @@ button:hover {
   box-shadow: 0 20px 60px rgba(0,0,0,0.7);
   gap: 2rem;
   align-items: flex-start;
-  
 }
 
 .modal::backdrop {
     background: rgba(0,0,0,0.90);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #061f4a;
 }
 
 .modal-content {
@@ -216,7 +220,7 @@ button:hover {
     flex-direction: column;
     gap: 1rem;
     justify-content: space-between;
-    align-content: center;
+    align-items: center;
 }
 
 .modal-header {
@@ -231,7 +235,9 @@ button:hover {
 }
 
 .modal-date {
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
+    text-align: center;
 }
 
 .modal-body {
@@ -253,7 +259,7 @@ button:hover {
 .modal-media-container {
     flex: 1;
     display: flex;
-    justify-content: center;
+    align-items: center;
 }
 
 .modal-media {
@@ -292,12 +298,21 @@ button:hover {
   flex: 1 1 100%;
   text-align: center;
   padding: 40px;
-  color: #666;
+}
+
+.placeholder p {
+  color: #323a45;
+  font-family: 'Inter', sans-serif;
 }
 
 .placeholder-icon {
   font-size: 48px;
   margin-bottom: 20px;
+}
+
+.error-code {
+  font-size: 30px;
+  margin-bottom: 38px;
 }
 
 .inter-text-normal {
