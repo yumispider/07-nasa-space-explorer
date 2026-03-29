@@ -135,6 +135,7 @@ function closeModal() {
 }
 
 function openModal(targetID) {
+    console.log(targetID);
     const galleryItemObj = galleryItemList[targetID];
     const url = galleryItemObj.url;
     const mediaType = galleryItemObj.media_type;
@@ -191,13 +192,13 @@ function appendGalleryItem(url, title, date, explanation, mediaType) {
     currentGalleryItem.innerHTML = `
         ${attr}
         <h3 class="gallery-item-title">
-            ${title}
+            <span class="inter-text-bold">${title}</span>
         </h3>
         <div class="container" id="gallery-item-info">
             ${date}
             <span class="button-container" id="button${galleryItems}">
                 <button class="learn-more-button" id="learn-more-button${galleryItems}">
-                    Learn more
+                    <span class="inter-text-normal">Learn more</span>
                 </button>
             </span>
         </div>
@@ -214,7 +215,7 @@ function appendGalleryItem(url, title, date, explanation, mediaType) {
     currentGalleryItem.querySelector('.learn-more-button').
         addEventListener('click', function(event) {
             //console.log(event.target.id);
-            const targetID = event.target.id;
+            const targetID = event.currentTarget.id;
             openModal(targetID);
         });
     
