@@ -290,7 +290,7 @@ function initializeEvents() {
     const getImagesButton = document.getElementById('get-images-button');
     getImagesButton.addEventListener('click', function() {
         clearGallery();
-        displayGalleryItems(IMAGE_SAMPLE);
+        //displayGalleryItems(IMAGE_SAMPLE);
         //fetchGalleryItems();
     });
 }
