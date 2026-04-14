@@ -146,6 +146,7 @@ button:hover {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 /* Three columns on wider screens */

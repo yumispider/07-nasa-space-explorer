@@ -1,3 +1,7 @@
+// Constants representing video formats
+const YOUTUBE_FORMAT = "youtube";
+const MP4_FORMAT = "mp4";
+
 const API_KEY = 'kspt0prS0SQDZODgttoWnvtNjoPDxEJuSmL29hPo';
 const IMAGE_ID_STARTER = 'gallery-item';
 const TEST_IMAGE_URL = '../img/NASA-Logo-Large.jpg';
@@ -21,6 +25,14 @@ const IMAGE_SAMPLE = [{
     "url": "https://apod.nasa.gov/apod/image/1707/ic342_rector1024s.jpg"
 }];
 
+const VIDEO_SAMPLE_2 = [{
+  "url": 'https://www.youtube.com/embed/uCbpHh_rTgc?rel=0', 
+  "title": 'Aurora Timelapse Over Italian Alps', 
+  "date": 'October 13, 2024', 
+  "explanation": "Did you see last night's aurora? This question was…Gallery: Global aurora during October 10/11, 2024", 
+  "media_type": 'video'
+}];
+
 const MONTH_MAP = {
     '01': 'January',
     '02': 'February',
@@ -39,7 +51,7 @@ const MONTH_MAP = {
 const ERROR_MESSAGE = 'Sorry, we could not retrieve media from the requested dates. Please try again later.';
 const LOADING_MESSAGE = '🔄 Loading space photos…';
 
-const galleryItemList = {};
+const galleryItemCache = {};
 
 let galleryItems = 0;
 let placeholderExists = true;
@@ -140,7 +152,7 @@ function closeModal() {
 
 function openModal(targetID) {
     console.log(targetID);
-    const galleryItemObj = galleryItemList[targetID];
+    const galleryItemObj = galleryItemCache[targetID];
     const url = galleryItemObj.url;
     const mediaType = galleryItemObj.media_type;
     const attr = getAttr(url, mediaType, 'modal-media');
@@ -203,7 +215,7 @@ function appendGalleryItem(url, title, date, explanation, mediaType) {
         </div>
     `;
 
-    galleryItemList[`learn-more-button${galleryItems}`] = {
+    galleryItemCache[`learn-more-button${galleryItems}`] = {
         'url': url,
         'title': title,
         'date': date,
@@ -290,8 +302,10 @@ function initializeEvents() {
     const getImagesButton = document.getElementById('get-images-button');
     getImagesButton.addEventListener('click', function() {
         clearGallery();
-        //displayGalleryItems(IMAGE_SAMPLE);
+        //displayGalleryItems(VIDEO_SAMPLE);
         fetchGalleryItems();
+        //console.log(VIDEO_SAMPLE);
+        console.log(galleryItemCache);
     });
 }
 
