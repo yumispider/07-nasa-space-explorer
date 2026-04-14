@@ -28,8 +28,8 @@ const IMAGE_SAMPLE = [{
 const VIDEO_SAMPLE_2 = [{
   "url": 'https://www.youtube.com/embed/uCbpHh_rTgc?rel=0', 
   "title": 'Aurora Timelapse Over Italian Alps', 
-  "date": 'October 13, 2024', 
-  "explanation": "Did you see last night's aurora? This question was…Gallery: Global aurora during October 10/11, 2024", 
+  "date": '2024-10-13', 
+  "explanation": "Did you see last night's aurora? This question was relevant around much of the world a few days ago because a powerful auroral storm became visible unusually far from the Earth's poles. The cause was a giant X-class solar flare on Tuesday that launched energetic electrons and protons into the Solar System, connecting to the Earth via our planet's magnetic field. A red glow of these particles striking oxygen atoms high in Earth's atmosphere pervades the frame, while vertical streaks dance. The featured video shows a one-hour timelapse as seen from Cortina d'Ampezzo over Alps Mountain peaks in northern Italy. Stars from our Milky Way Galaxy dot the background while streaks from airplanes and satellites punctuate the foreground. The high recent activity of our Sun is likely to continue to produce picturesque auroras over Earth during the next year or so. Gallery: Global aurora during October 10/11, 2024", 
   "media_type": 'video'
 }];
 
@@ -127,19 +127,47 @@ function clearGallery() {
     galleryItems = 0;
 }
 
+/* Retrieves the correct video format to use based on the
+url provided */
+function getVideoFormat(url) {
+    let videoFormat;
+    if(url.includes("www.youtube.com")) {
+        videoFormat = YOUTUBE_FORMAT;
+    } else {
+        videoFormat = MP4_FORMAT;
+    }
+}
+
+/* Obtains the attribute for the media contained in a given
+ gallery entry */
 function getAttr(url, mediaType, attrClass) {
     let itemAttr;
+    const videoFormat = getVideoFormat(url);
 
     switch(mediaType) {
         case 'image':
             itemAttr = `<img src="${url}" alt="image ${galleryItems}" class="${attrClass}"></img>`;
             break;
         case 'video':
-            itemAttr = `
-                <video class="${attrClass}" controls>
-                    <source src="${url}" type="video/mp4">
-                </video>
-            `;
+            switch(videoFormat) {
+                case YOUTUBE_FORMAT:
+                    itemAttr = `
+                        <iframe class="${attrClass}"
+                        src="${url}"
+                        title="YouTube video player" 
+                        frameborder="0"
+                        allowfullscreen>
+                        </iframe>
+                    `;
+                    break;
+                case MP4_FORMAT:
+                    itemAttr = `
+                        <video class="${attrClass}" controls>
+                            <source src="${url}" type="video/mp4">
+                        </video>
+                    `;
+            }
+            
     }
 
     return itemAttr;
@@ -302,10 +330,8 @@ function initializeEvents() {
     const getImagesButton = document.getElementById('get-images-button');
     getImagesButton.addEventListener('click', function() {
         clearGallery();
-        //displayGalleryItems(VIDEO_SAMPLE);
-        fetchGalleryItems();
-        //console.log(VIDEO_SAMPLE);
-        console.log(galleryItemCache);
+        displayGalleryItems(VIDEO_SAMPLE_2);
+        //fetchGalleryItems();
     });
 }
 
